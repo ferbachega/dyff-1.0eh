@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dyff-1.0eh"
+version = "1.1.0"
+description = "DYFF-1.0eh: EasyHybrid's extended DYFF force field (metals, residue library, CM5 charges) for pDynamo3."
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Jose Fernando R. Bachega" }]
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "networkx>=2.8",
+    "PyYAML",
+]
+
+[project.optional-dependencies]
+# Only for EASYHYBRID_ENV_CODES=rdkit (legacy env-code compatibility; the
+# default, native env_codes.py port, needs none of this).
+rdkit = ["rdkit"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["pdynamo*"]
+
+[tool.setuptools.package-data]
+pdynamo = ["data/**/*", "pdb_components_extra/**/*"]
