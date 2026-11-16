@@ -328,7 +328,7 @@ def plan ( system, library = None ):
     unmatched = [ u for u in unmatched if u[0] not in water_residues ]
     summary = { "residues": len ( matches ) + len ( unmatched ), "matched": len ( matches ),
                 "templates": dict ( Counter ( m["template"] for m in matches ) ),
-                "unmatched": [ "{} {}".format ( g, l.split ( ":" )[-1] ) for l, g, a in unmatched ], "rest_atoms": len ( rest ),
+                "unmatched": [ "{} {}".format ( g or "?", l.split ( ":" )[-1] ) for l, g, a in unmatched ], "rest_atoms": len ( rest ),
                 "waters": len ( water ) // 3, "ions": len ( ions ) }
     return { "matches": matches, "unmatched": unmatched, "edits": edits, "charges": charges, "rest_atoms": rest, "summary": summary }
 
