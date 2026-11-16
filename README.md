@@ -52,10 +52,12 @@ model = dyff_model(parameter_set=EH_DYFF_SET)   # dyff-1.0-eh
 system.DefineMMModel(model)
 ```
 
-See `examples/dyff_prep_bachega/prepare_dyff_eh.py` for a full worked script: structure
-file in, DYFF-1.0eh system out, no GUI (`python3 examples/dyff_prep_bachega/prepare_dyff_eh.py`
-runs it against the bundled `1BX4.pdb`). It is what EasyHybrid's own System > Prepare DYFF
-System does, written out as a plain script.
+`examples/simple_prepare.py` is the shortest path: a structure file in, a DYFF-1.0eh
+system out, in about 15 lines of real code (`python3 examples/simple_prepare.py` runs it
+against the bundled `1BX4.pdb`). For the fully-commented, step-by-step version (reports,
+metal sites, minimization, CLI options), see
+`examples/dyff_prep_bachega/prepare_dyff_eh.py` — what EasyHybrid's own System > Prepare
+DYFF System does, written out as a plain script.
 
 ## Documentation
 
