@@ -1,0 +1,474 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Preparo com DYFF</title><style>
+:root{--bg:#fff;--fg:#1d2329;--muted:#5b6670;--line:#e2e6ea;--card:#f6f8fa;--accent:#4c78a8}
+@media (prefers-color-scheme:dark){:root{--bg:#15191d;--fg:#e6e9ec;--muted:#9aa5b1;--line:#2c3339;--card:#1d2328;--accent:#7fb2ea}}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0}
+main{max-width:1050px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:1.6em;margin:.2em 0}h2{border-bottom:1px solid var(--line);padding-bottom:.25em;margin-top:2em}
+.box{background:var(--card);border-left:4px solid var(--accent);padding:10px 14px;border-radius:4px;margin:1em 0}
+.warn{border-left-color:#e45756}
+.flow{background:#fff;border-radius:8px;padding:8px;overflow-x:auto}
+.step{margin:1.2em 0}.step h3{margin:.2em 0 .4em}.code{display:inline-block;background:var(--accent);color:#fff;border-radius:4px;padding:0 7px;margin-right:6px;font-size:.9em}
+table{border-collapse:collapse;width:100%;font-size:.92em;display:block;overflow-x:auto}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}th{background:var(--card);width:150px;white-space:nowrap}
+code{background:var(--card);padding:1px 4px;border-radius:3px}
+nav a{margin-right:14px}
+</style></head><body><main>
+<p style="color:var(--muted)">EasyHybrid3 · preparo de sistemas com DYFF refinado · gerado por <code>docs/flowchart/build_flowchart_page.py</code></p>
+<h1>Preparo de sistemas com DYFF refinado: fluxograma e passo a passo</h1>
+<div class="box"><b>Já posso usar?</b> Sim. Tudo o que está aqui já está ligado à interface, na árvore de trabalho atual (<b>ainda não commitado</b>).
+Feche e reabra o EasyHybrid para carregar o código novo. Requisitos: <code>xtb</code> configurado no EasyHybrid e o RDKit disponível no Python do EasyHybrid,
+que é usado pelas bibliotecas de ambiente químico. Sem RDKit, o refinamento continua funcionando, mas sem as bibliotecas: as torções vêm só das varreduras xTB e não há calibração.</div>
+<nav><a href="#fluxo">Fluxograma</a><a href="#A1">A. Molécula pequena</a><a href="#B1">B. Proteína</a><a href="#C">C. Metais</a><a href="#D1">Etapas comuns</a><a href="#decisoes">Guia de decisões</a><a href="#problemas">Problemas comuns</a></nav>
+<h2 id="fluxo">Fluxograma</h2>
+<div class="flow"><svg width="100%"
+ viewBox="0.00 0.00 1055.80 1326.80" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(14.4 1312.4)">
+<title>prep</title>
+<g id="clust1" class="cluster">
+<title>cluster_a</title>
+<path fill="transparent" stroke="#9aa5b1" stroke-dasharray="5,2" d="M20,-261C20,-261 558,-261 558,-261 564,-261 570,-267 570,-273 570,-273 570,-1036 570,-1036 570,-1042 564,-1048 558,-1048 558,-1048 20,-1048 20,-1048 14,-1048 8,-1042 8,-1036 8,-1036 8,-273 8,-273 8,-267 14,-261 20,-261"/>
+<text text-anchor="middle" x="289" y="-1034.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="12.00">A. Molécula pequena ou ligante isolado</text>
+</g>
+<g id="clust2" class="cluster">
+<title>cluster_b</title>
+<path fill="transparent" stroke="#9aa5b1" stroke-dasharray="5,2" d="M590,-545C590,-545 1007,-545 1007,-545 1013,-545 1019,-551 1019,-557 1019,-557 1019,-1030 1019,-1030 1019,-1036 1013,-1042 1007,-1042 1007,-1042 590,-1042 590,-1042 584,-1042 578,-1036 578,-1030 578,-1030 578,-557 578,-557 578,-551 584,-545 590,-545"/>
+<text text-anchor="middle" x="798.5" y="-1028.4" font-family="Helvetica,sans-Serif" font-weight="bold" font-size="12.00">B. Proteína ou metaloproteína (PDB), com ligantes e solvente</text>
+</g>
+<!-- start -->
+<g id="node1" class="node">
+<title>start</title>
+<ellipse fill="#4c78a8" stroke="#4c78a8" stroke-width="1.2" cx="582" cy="-1280" rx="91.8" ry="18"/>
+<text text-anchor="middle" x="582" y="-1277.2" font-family="Helvetica,sans-Serif" font-size="11.00" fill="white">Que sistema você tem?</text>
+</g>
+<!-- kind -->
+<g id="node2" class="node">
+<title>kind</title>
+<polygon fill="#fff6db" stroke="#c99a00" stroke-width="1.2" points="582,-1231 538.22,-1213 582,-1195 625.78,-1213 582,-1231"/>
+<text text-anchor="middle" x="582" y="-1210.2" font-family="Helvetica,sans-Serif" font-size="11.00">Tipo</text>
+</g>
+<!-- start&#45;&gt;kind -->
+<g id="edge1" class="edge">
+<title>start&#45;&gt;kind</title>
+<path fill="none" stroke="#5b6670" d="M582,-1261.92C582,-1254.81 582,-1246.42 582,-1238.66"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="584.45,-1238.19 582,-1231.19 579.55,-1238.19 584.45,-1238.19"/>
+</g>
+<!-- a1 -->
+<g id="node3" class="node">
+<title>a1</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M496.5,-1019C496.5,-1019 267.5,-1019 267.5,-1019 261.5,-1019 255.5,-1013 255.5,-1007 255.5,-1007 255.5,-983 255.5,-983 255.5,-977 261.5,-971 267.5,-971 267.5,-971 496.5,-971 496.5,-971 502.5,-971 508.5,-977 508.5,-983 508.5,-983 508.5,-1007 508.5,-1007 508.5,-1013 502.5,-1019 496.5,-1019"/>
+<text text-anchor="middle" x="382" y="-1004.2" font-family="Helvetica,sans-Serif" font-size="11.00">A1 &#160;Abrir no Builder</text>
+<text text-anchor="middle" x="382" y="-992.2" font-family="Helvetica,sans-Serif" font-size="11.00">barra de ferramentas: Builder › New (desenhar)</text>
+<text text-anchor="middle" x="382" y="-980.2" font-family="Helvetica,sans-Serif" font-size="11.00">ou Edit existing (sistema já carregado)</text>
+</g>
+<!-- kind&#45;&gt;a1 -->
+<g id="edge2" class="edge">
+<title>kind&#45;&gt;a1</title>
+<path fill="none" stroke="#5b6670" d="M539.75,-1212.24C495.06,-1209.98 426.24,-1198.81 391,-1154 362.46,-1117.71 367.51,-1060.98 374.35,-1026.28"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="376.79,-1026.58 375.83,-1019.23 371.99,-1025.58 376.79,-1026.58"/>
+<text text-anchor="middle" x="411" y="-1121" font-family="Helvetica,sans-Serif" font-size="10.00">molécula</text>
+<text text-anchor="middle" x="411" y="-1110" font-family="Helvetica,sans-Serif" font-size="10.00">pequena</text>
+</g>
+<!-- b1 -->
+<g id="node13" class="node">
+<title>b1</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M858.5,-1013C858.5,-1013 679.5,-1013 679.5,-1013 673.5,-1013 667.5,-1007 667.5,-1001 667.5,-1001 667.5,-989 667.5,-989 667.5,-983 673.5,-977 679.5,-977 679.5,-977 858.5,-977 858.5,-977 864.5,-977 870.5,-983 870.5,-989 870.5,-989 870.5,-1001 870.5,-1001 870.5,-1007 864.5,-1013 858.5,-1013"/>
+<text text-anchor="middle" x="769" y="-998.2" font-family="Helvetica,sans-Serif" font-size="11.00">B1 &#160;Abrir o PDB</text>
+<text text-anchor="middle" x="769" y="-986.2" font-family="Helvetica,sans-Serif" font-size="11.00">File › Import Data... (ou abrir arquivo)</text>
+</g>
+<!-- kind&#45;&gt;b1 -->
+<g id="edge3" class="edge">
+<title>kind&#45;&gt;b1</title>
+<path fill="none" stroke="#5b6670" d="M614.8,-1208.4C649.35,-1202.82 702.84,-1188.81 733,-1154 765.89,-1116.05 770.42,-1054.21 770.14,-1020.24"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="772.59,-1019.99 770.01,-1013.03 767.69,-1020.08 772.59,-1019.99"/>
+<text text-anchor="middle" x="782" y="-1115.5" font-family="Helvetica,sans-Serif" font-size="10.00">proteína</text>
+</g>
+<!-- metal -->
+<g id="node23" class="node">
+<title>metal</title>
+<path fill="#fdecea" stroke="#e45756" stroke-width="1.2" d="M708.5,-1154C708.5,-1154 455.5,-1154 455.5,-1154 449.5,-1154 443.5,-1148 443.5,-1142 443.5,-1142 443.5,-1094 443.5,-1094 443.5,-1088 449.5,-1082 455.5,-1082 455.5,-1082 708.5,-1082 708.5,-1082 714.5,-1082 720.5,-1088 720.5,-1094 720.5,-1094 720.5,-1142 720.5,-1142 720.5,-1148 714.5,-1154 708.5,-1154"/>
+<text text-anchor="middle" x="582" y="-1139.2" font-family="Helvetica,sans-Serif" font-size="11.00">C. Metal?</text>
+<text text-anchor="middle" x="582" y="-1127.2" font-family="Helvetica,sans-Serif" font-size="11.00">Metaloproteína: caminho B (Prepare DYFF System).</text>
+<text text-anchor="middle" x="582" y="-1115.2" font-family="Helvetica,sans-Serif" font-size="11.00">Complexo isolado: caminho A. Cofatores com metal</text>
+<text text-anchor="middle" x="582" y="-1103.2" font-family="Helvetica,sans-Serif" font-size="11.00">(heme, Fe&#45;S) ainda não suportados.</text>
+<text text-anchor="middle" x="582" y="-1091.2" font-family="Helvetica,sans-Serif" font-size="11.00">Sem referência DFT para metais.</text>
+</g>
+<!-- kind&#45;&gt;metal -->
+<g id="edge4" class="edge">
+<title>kind&#45;&gt;metal</title>
+<path fill="none" stroke="#5b6670" stroke-dasharray="5,2" d="M582,-1194.94C582,-1185.48 582,-1173.24 582,-1161.37"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="584.45,-1161.06 582,-1154.06 579.55,-1161.06 584.45,-1161.06"/>
+<text text-anchor="middle" x="604" y="-1172" font-family="Helvetica,sans-Serif" font-size="10.00">tem metal</text>
+</g>
+<!-- a2 -->
+<g id="node4" class="node">
+<title>a2</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M525,-940C525,-940 239,-940 239,-940 233,-940 227,-934 227,-928 227,-928 227,-904 227,-904 227,-898 233,-892 239,-892 239,-892 525,-892 525,-892 531,-892 537,-898 537,-904 537,-904 537,-928 537,-928 537,-934 531,-940 525,-940"/>
+<text text-anchor="middle" x="382" y="-925.2" font-family="Helvetica,sans-Serif" font-size="11.00">A2 &#160;Conferir a química</text>
+<text text-anchor="middle" x="382" y="-913.2" font-family="Helvetica,sans-Serif" font-size="11.00">ordens de ligação, cargas formais (Protonate/Deprotonate),</text>
+<text text-anchor="middle" x="382" y="-901.2" font-family="Helvetica,sans-Serif" font-size="11.00">hidrogênios (Add Hydrogens)</text>
+</g>
+<!-- a1&#45;&gt;a2 -->
+<g id="edge7" class="edge">
+<title>a1&#45;&gt;a2</title>
+<path fill="none" stroke="#5b6670" d="M382,-970.9C382,-963.44 382,-955.05 382,-947.16"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="384.45,-947.09 382,-940.09 379.55,-947.09 384.45,-947.09"/>
+</g>
+<!-- a3 -->
+<g id="node5" class="node">
+<title>a3</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M453.5,-805C453.5,-805 310.5,-805 310.5,-805 304.5,-805 298.5,-799 298.5,-793 298.5,-793 298.5,-781 298.5,-781 298.5,-775 304.5,-769 310.5,-769 310.5,-769 453.5,-769 453.5,-769 459.5,-769 465.5,-775 465.5,-781 465.5,-781 465.5,-793 465.5,-793 465.5,-799 459.5,-805 453.5,-805"/>
+<text text-anchor="middle" x="382" y="-790.2" font-family="Helvetica,sans-Serif" font-size="11.00">A3 &#160;Abrir DYFF Parameters...</text>
+<text text-anchor="middle" x="382" y="-778.2" font-family="Helvetica,sans-Serif" font-size="11.00">(barra lateral do Builder)</text>
+</g>
+<!-- a2&#45;&gt;a3 -->
+<g id="edge8" class="edge">
+<title>a2&#45;&gt;a3</title>
+<path fill="none" stroke="#5b6670" d="M382,-891.71C382,-869.19 382,-835.21 382,-812.35"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="384.45,-812.05 382,-805.05 379.55,-812.05 384.45,-812.05"/>
+</g>
+<!-- q_charge -->
+<g id="node6" class="node">
+<title>q_charge</title>
+<polygon fill="#fff6db" stroke="#c99a00" stroke-width="1.2" points="382,-726 206,-690 382,-654 558,-690 382,-726"/>
+<text text-anchor="middle" x="382" y="-693.2" font-family="Helvetica,sans-Serif" font-size="11.00">Vai simular em solvente ou com</text>
+<text text-anchor="middle" x="382" y="-681.2" font-family="Helvetica,sans-Serif" font-size="11.00">interações entre moléculas?</text>
+</g>
+<!-- a3&#45;&gt;q_charge -->
+<g id="edge9" class="edge">
+<title>a3&#45;&gt;q_charge</title>
+<path fill="none" stroke="#5b6670" d="M382,-768.58C382,-758.63 382,-745.71 382,-733.27"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="384.45,-733.02 382,-726.02 379.55,-733.02 384.45,-733.02"/>
+</g>
+<!-- a4y -->
+<g id="node7" class="node">
+<title>a4y</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M254.5,-601C254.5,-601 37.5,-601 37.5,-601 31.5,-601 25.5,-595 25.5,-589 25.5,-589 25.5,-577 25.5,-577 25.5,-571 31.5,-565 37.5,-565 37.5,-565 254.5,-565 254.5,-565 260.5,-565 266.5,-571 266.5,-577 266.5,-577 266.5,-589 266.5,-589 266.5,-595 260.5,-601 254.5,-601"/>
+<text text-anchor="middle" x="146" y="-586.2" font-family="Helvetica,sans-Serif" font-size="11.00">A4 &#160;CM5 charges...</text>
+<text text-anchor="middle" x="146" y="-574.2" font-family="Helvetica,sans-Serif" font-size="11.00">(GFN1&#45;xTB; H polares recebem LJ pequeno)</text>
+</g>
+<!-- q_charge&#45;&gt;a4y -->
+<g id="edge10" class="edge">
+<title>q_charge&#45;&gt;a4y</title>
+<path fill="none" stroke="#5b6670" d="M327.86,-664.91C286.43,-646.48 229.99,-621.37 191.02,-604.03"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="191.83,-601.71 184.44,-601.1 189.84,-606.19 191.83,-601.71"/>
+<text text-anchor="middle" x="272" y="-631" font-family="Helvetica,sans-Serif" font-size="10.00">sim</text>
+</g>
+<!-- a4n -->
+<g id="node8" class="node">
+<title>a4n</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M482,-601C482,-601 304,-601 304,-601 298,-601 292,-595 292,-589 292,-589 292,-577 292,-577 292,-571 298,-565 304,-565 304,-565 482,-565 482,-565 488,-565 494,-571 494,-577 494,-577 494,-589 494,-589 494,-595 488,-601 482,-601"/>
+<text text-anchor="middle" x="393" y="-586.2" font-family="Helvetica,sans-Serif" font-size="11.00">A4&#39; &#160;Sem cargas parciais</text>
+<text text-anchor="middle" x="393" y="-574.2" font-family="Helvetica,sans-Serif" font-size="11.00">(melhor para conformações isoladas)</text>
+</g>
+<!-- q_charge&#45;&gt;a4n -->
+<g id="edge11" class="edge">
+<title>q_charge&#45;&gt;a4n</title>
+<path fill="none" stroke="#5b6670" d="M385.6,-654.62C387.19,-639.48 389.01,-622.05 390.45,-608.29"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="392.92,-608.28 391.21,-601.07 388.05,-607.77 392.92,-608.28"/>
+<text text-anchor="middle" x="396" y="-631" font-family="Helvetica,sans-Serif" font-size="10.00">não</text>
+</g>
+<!-- a5 -->
+<g id="node9" class="node">
+<title>a5</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M306.5,-521C306.5,-521 35.5,-521 35.5,-521 29.5,-521 23.5,-515 23.5,-509 23.5,-509 23.5,-473 23.5,-473 23.5,-467 29.5,-461 35.5,-461 35.5,-461 306.5,-461 306.5,-461 312.5,-461 318.5,-467 318.5,-473 318.5,-473 318.5,-509 318.5,-509 318.5,-515 312.5,-521 306.5,-521"/>
+<text text-anchor="middle" x="171" y="-506.2" font-family="Helvetica,sans-Serif" font-size="11.00">A5 &#160;Refine with xTB (Hessian + torsions)...</text>
+<text text-anchor="middle" x="171" y="-494.2" font-family="Helvetica,sans-Serif" font-size="11.00">Hessiana xTB → ligações/ângulos calibrados ao DFT</text>
+<text text-anchor="middle" x="171" y="-482.2" font-family="Helvetica,sans-Serif" font-size="11.00">torções: biblioteca DFT primeiro, varredura xTB no resto</text>
+<text text-anchor="middle" x="171" y="-470.2" font-family="Helvetica,sans-Serif" font-size="11.00">região: molécula inteira ou seleção</text>
+</g>
+<!-- a4y&#45;&gt;a5 -->
+<g id="edge12" class="edge">
+<title>a4y&#45;&gt;a5</title>
+<path fill="none" stroke="#5b6670" d="M150.82,-564.65C153.69,-554.3 157.45,-540.78 160.94,-528.21"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="163.34,-528.75 162.85,-521.34 158.61,-527.43 163.34,-528.75"/>
+</g>
+<!-- a4n&#45;&gt;a5 -->
+<g id="edge13" class="edge">
+<title>a4n&#45;&gt;a5</title>
+<path fill="none" stroke="#5b6670" d="M350.98,-564.97C322.35,-553.36 283.56,-537.63 249.33,-523.75"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="249.95,-521.36 242.54,-521 248.11,-525.91 249.95,-521.36"/>
+</g>
+<!-- q_check -->
+<g id="node10" class="node">
+<title>q_check</title>
+<polygon fill="#fff6db" stroke="#c99a00" stroke-width="1.2" points="171,-430 16,-394 171,-358 326,-394 171,-430"/>
+<text text-anchor="middle" x="171" y="-397.2" font-family="Helvetica,sans-Serif" font-size="11.00">Parâmetros OK?</text>
+<text text-anchor="middle" x="171" y="-385.2" font-family="Helvetica,sans-Serif" font-size="11.00">(abas coloridas por tensão)</text>
+</g>
+<!-- a5&#45;&gt;q_check -->
+<g id="edge14" class="edge">
+<title>a5&#45;&gt;q_check</title>
+<path fill="none" stroke="#5b6670" d="M171,-460.98C171,-453.54 171,-445.39 171,-437.43"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="173.45,-437.2 171,-430.2 168.55,-437.2 173.45,-437.2"/>
+</g>
+<!-- a6 -->
+<g id="node11" class="node">
+<title>a6</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M263.5,-317C263.5,-317 28.5,-317 28.5,-317 22.5,-317 16.5,-311 16.5,-305 16.5,-305 16.5,-281 16.5,-281 16.5,-275 22.5,-269 28.5,-269 28.5,-269 263.5,-269 263.5,-269 269.5,-269 275.5,-275 275.5,-281 275.5,-281 275.5,-305 275.5,-305 275.5,-311 269.5,-317 263.5,-317"/>
+<text text-anchor="middle" x="146" y="-302.2" font-family="Helvetica,sans-Serif" font-size="11.00">A6 &#160;Ajuste fino opcional</text>
+<text text-anchor="middle" x="146" y="-290.2" font-family="Helvetica,sans-Serif" font-size="11.00">Fit with xTB scan... (um diedro, gráfico EasyPlot)</text>
+<text text-anchor="middle" x="146" y="-278.2" font-family="Helvetica,sans-Serif" font-size="11.00">ou Refine na seleção problemática</text>
+</g>
+<!-- q_check&#45;&gt;a6 -->
+<g id="edge15" class="edge">
+<title>q_check&#45;&gt;a6</title>
+<path fill="none" stroke="#5b6670" d="M153.64,-362.01C150.92,-355.88 148.52,-349.37 147,-343 145.58,-337.05 144.88,-330.58 144.61,-324.35"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="147.05,-324.14 144.46,-317.19 142.15,-324.24 147.05,-324.14"/>
+<text text-anchor="middle" x="155" y="-335" font-family="Helvetica,sans-Serif" font-size="10.00">não</text>
+</g>
+<!-- a7 -->
+<g id="node12" class="node">
+<title>a7</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M549.5,-311C549.5,-311 312.5,-311 312.5,-311 306.5,-311 300.5,-305 300.5,-299 300.5,-299 300.5,-287 300.5,-287 300.5,-281 306.5,-275 312.5,-275 312.5,-275 549.5,-275 549.5,-275 555.5,-275 561.5,-281 561.5,-287 561.5,-287 561.5,-299 561.5,-299 561.5,-305 555.5,-311 549.5,-311"/>
+<text text-anchor="middle" x="431" y="-296.2" font-family="Helvetica,sans-Serif" font-size="11.00">A7 &#160;Fechar o Builder</text>
+<text text-anchor="middle" x="431" y="-284.2" font-family="Helvetica,sans-Serif" font-size="11.00">› &quot;Incorporar com DYFF e customizações?&quot; › Sim</text>
+</g>
+<!-- q_check&#45;&gt;a7 -->
+<g id="edge17" class="edge">
+<title>q_check&#45;&gt;a7</title>
+<path fill="none" stroke="#5b6670" d="M228.38,-371.15C273.61,-353.93 336.12,-330.13 379.7,-313.53"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="380.59,-315.82 386.26,-311.04 378.84,-311.24 380.59,-315.82"/>
+<text text-anchor="middle" x="332" y="-335" font-family="Helvetica,sans-Serif" font-size="10.00">sim</text>
+</g>
+<!-- a6&#45;&gt;q_check -->
+<g id="edge16" class="edge">
+<title>a6&#45;&gt;q_check</title>
+<path fill="none" stroke="#5b6670" d="M159.25,-317.17C161.5,-321.95 163.57,-327.04 165,-332 166.75,-338.08 168.02,-344.63 168.92,-351.1"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="166.49,-351.41 169.77,-358.07 171.36,-350.82 166.49,-351.41"/>
+</g>
+<!-- common -->
+<g id="node19" class="node">
+<title>common</title>
+<path fill="#e6f4ea" stroke="#54a24b" stroke-width="1.2" d="M697.5,-237C697.5,-237 426.5,-237 426.5,-237 420.5,-237 414.5,-231 414.5,-225 414.5,-225 414.5,-213 414.5,-213 414.5,-207 420.5,-201 426.5,-201 426.5,-201 697.5,-201 697.5,-201 703.5,-201 709.5,-207 709.5,-213 709.5,-213 709.5,-225 709.5,-225 709.5,-231 703.5,-237 697.5,-237"/>
+<text text-anchor="middle" x="562" y="-222.2" font-family="Helvetica,sans-Serif" font-size="11.00">Sistema com DYFF refinado</text>
+<text text-anchor="middle" x="562" y="-210.2" font-family="Helvetica,sans-Serif" font-size="11.00">(MMModel DYFF com edições, cargas, LJ de H polares)</text>
+</g>
+<!-- a7&#45;&gt;common -->
+<g id="edge18" class="edge">
+<title>a7&#45;&gt;common</title>
+<path fill="none" stroke="#5b6670" d="M462.05,-274.94C480.75,-264.66 504.7,-251.49 524.47,-240.63"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="525.77,-242.71 530.72,-237.19 523.41,-238.41 525.77,-242.71"/>
+</g>
+<!-- b2 -->
+<g id="node14" class="node">
+<title>b2</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M878,-940C878,-940 602,-940 602,-940 596,-940 590,-934 590,-928 590,-928 590,-904 590,-904 590,-898 596,-892 602,-892 602,-892 878,-892 878,-892 884,-892 890,-898 890,-904 890,-904 890,-928 890,-928 890,-934 884,-940 878,-940"/>
+<text text-anchor="middle" x="740" y="-925.2" font-family="Helvetica,sans-Serif" font-size="11.00">B2 &#160;Extras › Prepare DYFF System...</text>
+<text text-anchor="middle" x="740" y="-913.2" font-family="Helvetica,sans-Serif" font-size="11.00">(ou System › Add › Force Field › DYFF + residue library...</text>
+<text text-anchor="middle" x="740" y="-901.2" font-family="Helvetica,sans-Serif" font-size="11.00">num sistema sem ligações: abre a mesma janela)</text>
+</g>
+<!-- b1&#45;&gt;b2 -->
+<g id="edge19" class="edge">
+<title>b1&#45;&gt;b2</title>
+<path fill="none" stroke="#5b6670" d="M762.56,-976.91C759.22,-968.04 755.05,-956.95 751.2,-946.73"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="753.49,-945.86 748.73,-940.17 748.9,-947.59 753.49,-945.86"/>
+</g>
+<!-- b2o -->
+<g id="node18" class="node">
+<title>b2o</title>
+<path fill="#f2f2f2" stroke="#9aa5b1" stroke-width="1.2" d="M998.5,-877C998.5,-877 763.5,-877 763.5,-877 757.5,-877 751.5,-871 751.5,-865 751.5,-865 751.5,-844 751.5,-844 751.5,-838 757.5,-832 763.5,-832 763.5,-832 998.5,-832 998.5,-832 1004.5,-832 1010.5,-838 1010.5,-844 1010.5,-844 1010.5,-865 1010.5,-865 1010.5,-871 1004.5,-877 998.5,-877"/>
+<text text-anchor="middle" x="881" y="-863" font-family="Helvetica,sans-Serif" font-size="10.00">Alternativa: Extras › OPLS › Prepare OPLS System...</text>
+<text text-anchor="middle" x="881" y="-852" font-family="Helvetica,sans-Serif" font-size="10.00">depois DYFF + residue library</text>
+<text text-anchor="middle" x="881" y="-841" font-family="Helvetica,sans-Serif" font-size="10.00">(não aceita Zn/Cu/Fe...)</text>
+</g>
+<!-- b1&#45;&gt;b2o -->
+<g id="edge24" class="edge">
+<title>b1&#45;&gt;b2o</title>
+<path fill="none" stroke="#5b6670" stroke-dasharray="1,5" d="M853.92,-976.99C873.17,-969 891.35,-957.25 903,-940 914.94,-922.32 908.72,-912.55 903,-892 902.2,-889.11 901.1,-886.23 899.82,-883.41"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="901.91,-882.13 896.55,-877.01 897.55,-884.36 901.91,-882.13"/>
+</g>
+<!-- b3 -->
+<g id="node15" class="node">
+<title>b3</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M972,-817C972,-817 598,-817 598,-817 592,-817 586,-811 586,-805 586,-805 586,-769 586,-769 586,-763 592,-757 598,-757 598,-757 972,-757 972,-757 978,-757 984,-763 984,-769 984,-769 984,-805 984,-805 984,-811 978,-817 972,-817"/>
+<text text-anchor="middle" x="785" y="-802.2" font-family="Helvetica,sans-Serif" font-size="11.00">B3 &#160;Janela de preparo</text>
+<text text-anchor="middle" x="785" y="-790.2" font-family="Helvetica,sans-Serif" font-size="11.00">☑ remover capas/ligantes covalentes &#160;☑ completar resíduos truncados (aviso)</text>
+<text text-anchor="middle" x="785" y="-778.2" font-family="Helvetica,sans-Serif" font-size="11.00">sítios metálicos: ligado/iônico, carga, multiplicidade</text>
+<text text-anchor="middle" x="785" y="-766.2" font-family="Helvetica,sans-Serif" font-size="11.00">ligantes (pH) &#160;· &#160;método: GFN2&#45;xTB | g&#45;xTB | DFT (em breve) &#160;· &#160;escala CM5</text>
+</g>
+<!-- b2&#45;&gt;b3 -->
+<g id="edge20" class="edge">
+<title>b2&#45;&gt;b3</title>
+<path fill="none" stroke="#5b6670" d="M738.61,-891.92C738.43,-874.75 739.98,-851.09 748,-832 749.29,-828.94 750.86,-825.93 752.63,-823.02"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="754.68,-824.36 756.5,-817.17 750.59,-821.65 754.68,-824.36"/>
+</g>
+<!-- b4 -->
+<g id="node16" class="node">
+<title>b4</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M913,-714C913,-714 661,-714 661,-714 655,-714 649,-708 649,-702 649,-702 649,-678 649,-678 649,-672 655,-666 661,-666 661,-666 913,-666 913,-666 919,-666 925,-672 925,-678 925,-678 925,-702 925,-702 925,-708 919,-714 913,-714"/>
+<text text-anchor="middle" x="787" y="-699.2" font-family="Helvetica,sans-Serif" font-size="11.00">B4 &#160;Sistema novo (sem OPLS)</text>
+<text text-anchor="middle" x="787" y="-687.2" font-family="Helvetica,sans-Serif" font-size="11.00">H, protonação (Cys tiolato, His pelo N coordenante),</text>
+<text text-anchor="middle" x="787" y="-675.2" font-family="Helvetica,sans-Serif" font-size="11.00">ligações metal–doador, tipos DYFF dos metais</text>
+</g>
+<!-- b3&#45;&gt;b4 -->
+<g id="edge21" class="edge">
+<title>b3&#45;&gt;b4</title>
+<path fill="none" stroke="#5b6670" d="M785.61,-756.98C785.85,-745.7 786.12,-732.77 786.36,-721.37"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="788.82,-721.18 786.51,-714.13 783.92,-721.07 788.82,-721.18"/>
+</g>
+<!-- b5 -->
+<g id="node17" class="node">
+<title>b5</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M978,-613C978,-613 598,-613 598,-613 592,-613 586,-607 586,-601 586,-601 586,-565 586,-565 586,-559 592,-553 598,-553 598,-553 978,-553 978,-553 984,-553 990,-559 990,-565 990,-565 990,-601 990,-601 990,-607 984,-613 978,-613"/>
+<text text-anchor="middle" x="788" y="-598.2" font-family="Helvetica,sans-Serif" font-size="11.00">B5 &#160;DYFF + biblioteca aplicada automaticamente</text>
+<text text-anchor="middle" x="788" y="-586.2" font-family="Helvetica,sans-Serif" font-size="11.00">resíduos da biblioteca (ajustados por força)</text>
+<text text-anchor="middle" x="788" y="-574.2" font-family="Helvetica,sans-Serif" font-size="11.00">sítio metálico + resíduos &quot;pendentes&quot; + ligantes → Hessiana xTB/g&#45;xTB + CM5</text>
+<text text-anchor="middle" x="788" y="-562.2" font-family="Helvetica,sans-Serif" font-size="11.00">água TIP3P, íons com carga formal</text>
+</g>
+<!-- b4&#45;&gt;b5 -->
+<g id="edge22" class="edge">
+<title>b4&#45;&gt;b5</title>
+<path fill="none" stroke="#5b6670" d="M787.22,-665.96C787.35,-652.68 787.51,-635.68 787.65,-620.61"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="790.1,-620.41 787.72,-613.39 785.2,-620.36 790.1,-620.41"/>
+</g>
+<!-- b5&#45;&gt;common -->
+<g id="edge23" class="edge">
+<title>b5&#45;&gt;common</title>
+<path fill="none" stroke="#5b6670" d="M732.5,-552.83C712.15,-537.88 694,-517.42 694,-492 694,-492 694,-492 694,-292 694,-267.07 675.62,-250.71 652.58,-240.01"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="653.37,-237.68 645.97,-237.14 651.42,-242.18 653.37,-237.68"/>
+</g>
+<!-- b2o&#45;&gt;b5 -->
+<g id="edge25" class="edge">
+<title>b2o&#45;&gt;b5</title>
+<path fill="none" stroke="#5b6670" stroke-dasharray="1,5" d="M981.57,-832C987.44,-827.83 992.69,-822.87 997,-817 1012.77,-795.5 1003.86,-782.77 997,-757 983.43,-706.02 976.83,-689.71 938,-654 921.32,-638.66 900.69,-626.13 880.12,-616.13"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="881.12,-613.9 873.74,-613.11 879.02,-618.32 881.12,-613.9"/>
+</g>
+<!-- solv -->
+<g id="node20" class="node">
+<title>solv</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M638,-170C638,-170 486,-170 486,-170 480,-170 474,-164 474,-158 474,-158 474,-146 474,-146 474,-140 480,-134 486,-134 486,-134 638,-134 638,-134 644,-134 650,-140 650,-146 650,-146 650,-158 650,-158 650,-164 644,-170 638,-170"/>
+<text text-anchor="middle" x="562" y="-155.2" font-family="Helvetica,sans-Serif" font-size="11.00">Opcional: Edit › Solvate System</text>
+<text text-anchor="middle" x="562" y="-143.2" font-family="Helvetica,sans-Serif" font-size="11.00">(caixa, esfera; neutralizar; sal)</text>
+</g>
+<!-- common&#45;&gt;solv -->
+<g id="edge26" class="edge">
+<title>common&#45;&gt;solv</title>
+<path fill="none" stroke="#5b6670" d="M562,-200.92C562,-193.81 562,-185.42 562,-177.66"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="564.45,-177.19 562,-170.19 559.55,-177.19 564.45,-177.19"/>
+</g>
+<!-- nb -->
+<g id="node21" class="node">
+<title>nb</title>
+<path fill="#eef3f8" stroke="#4c78a8" stroke-width="1.2" d="M655,-103C655,-103 469,-103 469,-103 463,-103 457,-97 457,-91 457,-91 457,-79 457,-79 457,-73 463,-67 469,-67 469,-67 655,-67 655,-67 661,-67 667,-73 667,-79 667,-79 667,-91 667,-91 667,-97 661,-103 655,-103"/>
+<text text-anchor="middle" x="562" y="-88.2" font-family="Helvetica,sans-Serif" font-size="11.00">NB Model definido automaticamente</text>
+<text text-anchor="middle" x="562" y="-76.2" font-family="Helvetica,sans-Serif" font-size="11.00">(System › Add › NB Model para trocar)</text>
+</g>
+<!-- solv&#45;&gt;nb -->
+<g id="edge27" class="edge">
+<title>solv&#45;&gt;nb</title>
+<path fill="none" stroke="#5b6670" d="M562,-133.92C562,-126.81 562,-118.42 562,-110.66"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="564.45,-110.19 562,-103.19 559.55,-110.19 564.45,-110.19"/>
+</g>
+<!-- run -->
+<g id="node22" class="node">
+<title>run</title>
+<ellipse fill="#54a24b" stroke="#54a24b" stroke-width="1.2" cx="562" cy="-18" rx="163.86" ry="18"/>
+<text text-anchor="middle" x="562" y="-15.2" font-family="Helvetica,sans-Serif" font-size="11.00" fill="white">Minimização, dinâmica, QM/MM, varreduras...</text>
+</g>
+<!-- nb&#45;&gt;run -->
+<g id="edge28" class="edge">
+<title>nb&#45;&gt;run</title>
+<path fill="none" stroke="#5b6670" d="M562,-66.92C562,-59.81 562,-51.42 562,-43.66"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="564.45,-43.19 562,-36.19 559.55,-43.19 564.45,-43.19"/>
+</g>
+<!-- metal&#45;&gt;a1 -->
+<g id="edge5" class="edge">
+<title>metal&#45;&gt;a1</title>
+<path fill="none" stroke="#5b6670" stroke-dasharray="5,2" d="M523.88,-1081.84C492.66,-1062.95 454.78,-1040.03 426.02,-1022.63"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="427.28,-1020.53 420.03,-1019.01 424.75,-1024.73 427.28,-1020.53"/>
+<text text-anchor="middle" x="514.5" y="-1059" font-family="Helvetica,sans-Serif" font-size="10.00">complexo</text>
+</g>
+<!-- metal&#45;&gt;b1 -->
+<g id="edge6" class="edge">
+<title>metal&#45;&gt;b1</title>
+<path fill="none" stroke="#5b6670" stroke-dasharray="5,2" d="M636.34,-1081.84C668.82,-1060.82 709,-1034.82 736.58,-1016.98"/>
+<polygon fill="#5b6670" stroke="#5b6670" points="738.06,-1018.94 742.61,-1013.08 735.4,-1014.82 738.06,-1018.94"/>
+<text text-anchor="middle" x="707.5" y="-1059" font-family="Helvetica,sans-Serif" font-size="10.00">metaloproteína</text>
+</g>
+</g>
+</svg>
+</div>
+<h2>A. Molécula pequena ou ligante isolado</h2><section class="step" id="A1"><h3><span class="code">A1</span> Abrir a molécula no Builder</h3>
+<table><tr><th>Onde</th><td>Barra de ferramentas: botão <b>Builder</b>. O programa pergunta <i>New</i> (tela em branco, para desenhar ou montar com a biblioteca de fragmentos e estruturas) ou <i>Edit existing</i> (edita uma cópia de um sistema já carregado, por exemplo um mol2 ou sdf).</td></tr><tr><th>O que acontece</th><td>Abre a barra lateral do Builder. Em <i>Edit existing</i>, as ordens de ligação são percebidas automaticamente (Wang &amp; Case) e o sistema original só é substituído no fim, se você aceitar.</td></tr>
+<tr><th>Tempo típico</th><td>instantâneo</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td>Se o sistema já tem modelo MM ou QC, o Builder avisa que ele será redefinido. Moléculas grandes (centenas de átomos) funcionam, mas o refinamento por xTB fica mais lento: veja A5, modo seleção.</td></tr></table></section><section class="step" id="A2"><h3><span class="code">A2</span> Conferir a química</h3>
+<table><tr><th>Onde</th><td>Barra lateral do Builder: ferramentas de ligação (ordem simples, dupla, tripla), <b>Add Hydrogens...</b>, interruptor <i>Adjust hydrogen count</i>; na janela DYFF Parameters, <b>Protonate</b> / <b>Deprotonate</b> nas linhas selecionadas.</td></tr><tr><th>O que acontece</th><td>Define o que todo o resto usa: ordens de ligação (tipos DYFF, códigos de ambiente químico), cargas formais (carga total do xTB, códigos), hidrogênios.</td></tr>
+<tr><th>Tempo típico</th><td>minutos de trabalho manual</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td>É a etapa mais importante. Uma ordem de ligação errada muda o tipo DYFF e o código de ambiente, e a biblioteca deixa de reconhecer a ligação. Confira anéis aromáticos, carboxilatos e grupos com carga.</td></tr></table></section><section class="step" id="A3"><h3><span class="code">A3</span> Abrir a janela DYFF Parameters</h3>
+<table><tr><th>Onde</th><td>Barra lateral do Builder: <b>DYFF Parameters...</b></td></tr><tr><th>O que acontece</th><td>Mostra os tipos DYFF e todos os termos (ligações, ângulos, diedros, fora do plano), coloridos pela tensão na geometria atual: verde, amarelo, vermelho. Os botões de cargas e de refinamento ficam aqui.</td></tr>
+<tr><th>Tempo típico</th><td>instantâneo</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td>Clicar numa linha destaca os átomos na tela.</td></tr></table></section><section class="step" id="A4"><h3><span class="code">A4</span> Decidir sobre cargas parciais</h3>
+<table><tr><th>Onde</th><td>Janela DYFF Parameters: <b>CM5 charges...</b> (ou <b>Clear charges</b>)</td></tr><tr><th>O que acontece</th><td>Calcula cargas CM5 com GFN1-xTB para a molécula inteira. A partir daí o modelo passa a ter eletrostática, e os hidrogênios polares (ligados a N, O ou S) recebem automaticamente um tipo de Lennard-Jones pequeno (σ = 1,0 Å). Sem isso, as ligações de hidrogênio ficariam dentro da parede repulsiva do H.</td></tr>
+<tr><th>Tempo típico</th><td>segundos</td></tr><tr><th>Precisão validada</th><td>Com cargas, o refinamento usa a tabela de torções ajustada com CM5 (mediana 1,62 kcal/mol contra o DFT). Sem cargas, a tabela sem cargas (1,33 kcal/mol). Na crambina, o LJ dos H polares reduziu o erro de força de 306 para 247 kJ/mol/Å.</td></tr>
+<tr><th>Cuidados</th><td><b>Faça A4 antes de A5.</b> A escolha da tabela de torções e os ajustes por varredura dependem de haver cargas. Regra prática: simulação em solvente ou com outras moléculas, use cargas; conformações isoladas ou fase gasosa, não use. As cargas pioram os perfis de torção em fase gasosa.</td></tr></table></section><section class="step" id="A5"><h3><span class="code">A5</span> Refinar com xTB</h3>
+<table><tr><th>Onde</th><td>Janela DYFF Parameters: <b>Refine with xTB (Hessian + torsions)...</b>. O diálogo tem: Hessiana (☑ recomendado), <i>Torsions from the DFT library</i> (☑ padrão), carga total, multiplicidade, água implícita ALPB (marcada automaticamente se houver carga formal), número de varreduras em paralelo, <i>Whole molecule</i> ou <i>Selected atoms only</i> e a vizinhança da seleção (padrão 3 ligações).</td></tr><tr><th>O que acontece</th><td><ol><li>Hessiana GFN2-xTB no mínimo do xTB. As constantes de ligação e ângulo saem pelo método de Seminario modificado e são <b>calibradas ao DFT pelo ambiente químico</b>, automaticamente.</li><li>Para cada ligação girável, a torção vem da <b>biblioteca DFT</b> (17 939 varreduras B3LYP-D3BJ/DZVP) quando o ambiente é conhecido.</li><li>As ligações restantes recebem uma varredura relaxada com xTB (24 pontos) e um ajuste autoconsistente.</li><li>No modo seleção, tudo é feito num subsistema com hidrogênios de capa, e só os termos com todos os átomos selecionados mudam.</li></ol>Tudo vira um passo de Undo.</td></tr>
+<tr><th>Tempo típico</th><td>Hessiana: segundos a 1 min (até ~60 átomos). Torções da biblioteca: instantâneo. Cada varredura xTB: 1 a 5 min (em paralelo).</td></tr><tr><th>Precisão validada</th><td>Frequências contra DFT: 116,5 → 53,9 cm⁻¹ com a calibração (teto DFT 51,3). Torções contra DFT, mediana: só Hessiana 1,66; biblioteca 1,31; varredura xTB própria 1,38 kcal/mol. A biblioteca cobre 89 % das ligações giráveis da biblioteca de estruturas.</td></tr>
+<tr><th>Cuidados</th><td>Na barra de status:<ul><li>quantos termos foram calibrados;</li><li>quantas torções vieram da biblioteca e quantas da varredura;</li><li>avisos de frequência imaginária (a geometria não é um mínimo) e de termos não físicos, que ficam com o valor do DYFF.</li></ul>Se uma varredura xTB mudar as ligações (transferência de próton), aquela ligação é recusada: tente com ALPB ou confira a protonação.</td></tr></table></section><section class="step" id="A6"><h3><span class="code">A6</span> Conferir e ajustar à mão (opcional)</h3>
+<table><tr><th>Onde</th><td>Janela DYFF Parameters: abas coloridas por tensão, filtro <i>attention</i>; num diedro, <b>Fit with xTB scan...</b> (ajuste de um diedro, com gráfico EasyPlot da curva xTB contra a do DYFF); ou repetir A5 no modo <i>Selected atoms only</i> numa região problemática.</td></tr><tr><th>O que acontece</th><td>Permite inspecionar e corrigir um termo específico, comparando visualmente o perfil do xTB e o do DYFF.</td></tr>
+<tr><th>Tempo típico</th><td>minutos</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td><b>Clear xTB refinement</b> volta às regras do DYFF; Undo desfaz o último refinamento.</td></tr></table></section><section class="step" id="A7"><h3><span class="code">A7</span> Incorporar ao EasyHybrid</h3>
+<table><tr><th>Onde</th><td>Fechar o Builder. O programa pergunta <i>Incorporar com DYFF e customizações?</i>: <b>Sim</b>.</td></tr><tr><th>O que acontece</th><td>Cria (ou substitui, em <i>Edit existing</i>) o sistema pDynamo com o modelo MM DYFF, as edições (ligações, ângulos, torções), as cargas, o LJ dos H polares e o modelo não ligado.</td></tr>
+<tr><th>Tempo típico</th><td>instantâneo</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td><b>Não</b> mantém o comportamento antigo: DYFF puro, sem as customizações. As edições ficam presas à topologia: se a molécula mudar depois, as edições por átomo são descartadas, com aviso.</td></tr></table></section>
+<h2>B. Proteína ou metaloproteína (com ou sem ligantes, cofatores e solvente)</h2><section class="step" id="B1"><h3><span class="code">B1</span> Abrir a proteína</h3>
+<table><tr><th>Onde</th><td><b>File › Import Data...</b> (ou abrir o PDB diretamente)</td></tr><tr><th>O que acontece</th><td>Lê o arquivo. Um PDB sem registros CONECT entra <b>sem ligações</b>; a preparação de B2 cria a química.</td></tr>
+<tr><th>Tempo típico</th><td>instantâneo</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td>Conjuntos de RMN (vários MODEL): só o primeiro modelo é usado.</td></tr></table></section><section class="step" id="B2"><h3><span class="code">B2</span> Abrir o preparo DYFF</h3>
+<table><tr><th>Onde</th><td><b>Extras › Prepare DYFF System...</b> &nbsp;ou&nbsp; <b>System › Add › Force Field › DYFF + residue library...</b> num sistema sem ligações (abre a mesma janela)</td></tr><tr><th>O que acontece</th><td>Analisa a estrutura sem tipar com OPLS: resíduos, protonação inferida, pontes S–S, quebras de cadeia, sítios metálicos (metal e átomos doadores por distância), ligantes, resíduos truncados e resíduos ligados covalentemente que o preparo não sabe ligar.</td></tr>
+<tr><th>Tempo típico</th><td>segundos</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td>Alternativa: <i>Extras › OPLS › Prepare OPLS System...</i> e depois <i>DYFF + residue library</i>. Esse caminho <b>não aceita Zn, Cu, Fe</b> e afins (o OPLS do EasyHybrid não tem esses íons).</td></tr></table></section><section class="step" id="B3"><h3><span class="code">B3</span> Escolhas na janela</h3>
+<table><tr><th>Onde</th><td>Seções: resíduos ligados covalentemente (☑ remover), resíduos truncados (☑ completar), tabela de sítios metálicos (modelo <i>bonded/ionic</i>, carga, multiplicidade, editáveis), ligantes, pH, água implícita, <b>método</b> (GFN2-xTB / g-xTB / DFT-ORCA em breve), <b>escala CM5</b>, nome do sistema.</td></tr><tr><th>O que acontece</th><td><ul><li><b>Capas covalentes</b> (ACE/NME/NH2 de peptídeos) e ligantes covalentes são removidos; a cadeia fica com terminal livre.</li><li><b>Resíduos truncados</b>: os átomos que faltam são colocados geometricamente (comprimentos e ângulos padrão, conformação estendida). <b>Aviso</b>: confira e minimize.</li><li><b>Sítio ligado</b>: ligações metal–doador; Cys coordenante vira tiolato, His fica protonada no N que não coordena, Asp/Glu desprotonados. Água coordenada fica sem ligação (o DYFF não tem tipo para O de água com 3 ligações).</li><li><b>Sítio iônico</b>: o metal é uma carga pontual com LJ (padrão para Mg e Ca).</li><li>Um sítio "ligado" com menos de 2 doadores no arquivo (completado por simetria cristalográfica, como a insulina 4INS) vira iônico, com aviso.</li></ul></td></tr>
+<tr><th>Tempo típico</th><td>—</td></tr><tr><th>Precisão validada</th><td>Veja B5.</td></tr>
+<tr><th>Cuidados</th><td>Confira <b>carga e multiplicidade</b>: Cu(II) = 2, Fe(III) alto spin = 6, Fe(II) alto spin = 5, Zn(II) = 1. O g-xTB não tem solvente implícito: para sítios carregados prefira GFN2-xTB com ALPB.</td></tr></table></section><section class="step" id="B4"><h3><span class="code">B4</span> Sistema novo</h3>
+<table><tr><th>Onde</th><td>Criado na sessão como um sistema novo, com o nome escolhido.</td></tr><tr><th>O que acontece</th><td>Hidrogênios (com reparo dos H que o construtor do pDynamo põe sobre o átomo pai em geometrias distorcidas), ordens de ligação, nomes de resíduos, ligações metal–doador, tipos DYFF dos metais (<i>Zn:Tet:+2</i>, <i>Ca:Oct:+2</i>, ...: o DYFF não tem tipo de íon livre para a maioria dos metais).</td></tr>
+<tr><th>Tempo típico</th><td>segundos</td></tr><tr><th>Precisão validada</th><td>Testado em 6 metaloproteínas (Zn, Cu, Fe, Ca) e um controle sem metal.</td></tr>
+<tr><th>Cuidados</th><td>—</td></tr></table></section><section class="step" id="B5"><h3><span class="code">B5</span> DYFF + biblioteca, aplicado automaticamente</h3>
+<table><tr><th>Onde</th><td>Barra de status ao final: resíduos da biblioteca, carga total, sítios refinados, avisos.</td></tr><tr><th>O que acontece</th><td><ul><li>Resíduos reconhecidos: biblioteca ajustada por força (71 modelos).</li><li>Os resíduos ligados ao metal ficam <b>pendentes</b> até o refinamento: o metal, seus resíduos doadores e os ligantes formam grupos fora da biblioteca. Cada grupo recebe, num subsistema com capas, cargas CM5 (com a multiplicidade do sítio), Hessiana com o método escolhido (calibrada ao DFT pelo ambiente onde houver código) e torções da biblioteca DFT.</li><li>Água: cargas TIP3P e LJ do oxigênio TIP3P. Íons: carga formal.</li></ul></td></tr>
+<tr><th>Tempo típico</th><td>1 a 5 min por sítio metálico (GFN2-xTB); g-xTB é ~2 a 3× mais lento</td></tr><tr><th>Precisão validada</th><td>Distância metal–doador após minimizar, maior desvio: Fe(III)Cys4 0,03 Å (iônico 0,14); Zn Cys2His2 0,10 Å (iônico 0,27); Zn His3 da anidrase ≤ 0,12 Å nas His (o modelo iônico solta uma His: 3,7 Å); Ca da calmodulina 0,22 Å.</td></tr>
+<tr><th>Cuidados</th><td><b>Cobre tipo 1</b>: a ligação axial fraca Cu–S(Met), 2,8 Å no cristal, encurta para 2,4 Å com GFN2-xTB e 2,55 Å com g-xTB. Ligações metal–ligante fracas ainda não têm tratamento especial: prefira g-xTB para cobre.</td></tr></table></section>
+<h2>C. Sistemas com metais de transição</h2><section class="step" id="C"><h3><span class="code">C</span> Metais de transição</h3>
+<table><tr><th>Onde</th><td>Metaloproteína: caminho B (<b>Prepare DYFF System</b>). Complexo isolado: caminho A. <b>Cofatores com metal</b> (heme, clusters Fe-S) ainda não são suportados no preparo (a janela avisa).</td></tr><tr><th>O que acontece</th><td>O DYFF tipa metais. A Hessiana do xTB fornece ligações e ângulos em torno do metal; nos subsistemas, o metal sempre leva seus ligantes e nunca recebe hidrogênio de capa. As bibliotecas DFT não têm metais, então esses termos ficam com os valores do xTB, sem calibração.</td></tr>
+<tr><th>Tempo típico</th><td>como A5 / B4</td></tr><tr><th>Precisão validada</th><td><b>Não validado contra DFT.</b> O QCArchive não tem referência para metais.</td></tr>
+<tr><th>Cuidados</th><td>Use ALPB e confira carga e multiplicidade (spin) no diálogo. Compare com estruturas cristalográficas antes de uma produção.</td></tr></table></section>
+<h2>Etapas comuns</h2><section class="step" id="D1"><h3><span class="code">D1</span> Solvatar (caminho A)</h3>
+<table><tr><th>Onde</th><td><b>Edit › Solvate System</b> (no Builder: caixa, cubo ou esfera; neutralizar; sal)</td></tr><tr><th>O que acontece</th><td>Acrescenta solvente e íons à molécula preparada.</td></tr>
+<tr><th>Tempo típico</th><td>segundos</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td>No caminho B, prefira solvatar em B2. A água ganha cargas TIP3P sobre termos ligados do DYFF, o que <b>não é um modelo de água validado</b>: equilibre (NPT) e confira a densidade antes de produzir.</td></tr></table></section><section class="step" id="D2"><h3><span class="code">D2</span> Modelo não ligado</h3>
+<table><tr><th>Onde</th><td>Definido automaticamente; para trocar: <b>System › Add › NB Model</b></td></tr><tr><th>O que acontece</th><td>Interação completa em sistemas sem periodicidade; corte em caixas.</td></tr>
+<tr><th>Tempo típico</th><td>—</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td>—</td></tr></table></section><section class="step" id="D3"><h3><span class="code">D3</span> Simular</h3>
+<table><tr><th>Onde</th><td>Menus de simulação (minimização, dinâmica, varreduras, QM/MM)</td></tr><tr><th>O que acontece</th><td>O modelo DYFF refinado é um modelo MM comum do pDynamo e funciona com todos os métodos.</td></tr>
+<tr><th>Tempo típico</th><td>—</td></tr><tr><th>Precisão validada</th><td>—</td></tr>
+<tr><th>Cuidados</th><td>Salve o projeto (.easy): as edições, as cargas e o modelo ficam gravados.</td></tr></table></section>
+<h2 id="decisoes">Guia de decisões</h2>
+<table>
+<tr><th>Pergunta</th><td><b>Recomendação</b></td></tr>
+<tr><th>Cargas ou não?</th><td>Use cargas (CM5 ou biblioteca de resíduos) para solvente, interações intermoleculares, proteínas e complexos. Dispense para conformações isoladas ou fase gasosa: com cargas, os perfis de torção ficam piores (1,62 contra 1,33 kcal/mol).</td></tr>
+<tr><th>Molécula inteira ou seleção?</th><td>Molécula inteira até cerca de 60 átomos. Acima disso, ou quando só uma região interessa (o sítio de um ligante, um resíduo modificado), use a seleção: com 3 ligações de vizinhança, o resultado foi igual ao da molécula inteira.</td></tr>
+<tr><th>Biblioteca DFT ou varredura xTB?</th><td>Deixe a biblioteca ligada, que é o padrão. Ela é tão boa quanto a varredura própria no ambiente r2 e melhor no r1, porque carrega dados DFT, e não custa nada. As varreduras xTB cobrem automaticamente o que faltar.</td></tr>
+<tr><th>ALPB (água implícita)?</th><td>Sempre que houver carga formal. Em fase gasosa, o xTB descreve mal íons isolados; um carboxilato, por exemplo, quase descarboxila.</td></tr>
+<tr><th>DYFF ou OPLS-AA para proteínas?</th><td>DYFF + biblioteca: forças e energias de geometrias distorcidas melhores, mais estados de protonação e metais. OPLS-AA: diferenças de energia entre confôrmeros relaxados melhores e água validada (TIP3P). Para produção longa em água explícita, o OPLS-AA ainda é a escolha mais conservadora.</td></tr>
+<tr><th>Termos fora do plano (impróprios)?</th><td>Nada a fazer. O ajuste a partir da Hessiana xTB piorou os resultados nos testes, então os impróprios ficam com as regras do DYFF.</td></tr>
+</table>
+<h2 id="problemas">Problemas comuns</h2>
+<table>
+<tr><th>Sintoma</th><td><b>Causa e o que fazer</b></td></tr>
+<tr><th>"no bonds or no bond orders"</th><td>Sistema lido de um PDB sem CONECT. Prepare antes com <i>Prepare OPLS System</i> (B2).</td></tr>
+<tr><th>Poucos resíduos reconhecidos</th><td>Nomes de resíduos fora do padrão, átomos pesados faltando ou protonação incomum. Os resíduos não reconhecidos são tratados como "fora da biblioteca" (B4), o que funciona, mas é mais lento. Confira a aba Residues de B2.</td></tr>
+<tr><th>"N imaginary frequencies"</th><td>A geometria não estava num mínimo do xTB. Repita com <i>Use the xTB optimized geometry</i>, ou otimize antes.</td></tr>
+<tr><th>"scan changed the bonding"</th><td>Transferência de próton ou quebra de ligação durante a varredura. Use ALPB e confira a protonação. Aquela ligação fica sem correção.</td></tr>
+<tr><th>"term(s) kept the DYFF value"</th><td>Constante não física na Hessiana (comum em ânions em fase gasosa). Normal; com ALPB costuma desaparecer.</td></tr>
+<tr><th>"Per-atom ... edits were NOT applied"</th><td>A molécula mudou depois do refinamento (átomo ou ligação acrescentado). Refaça A5.</td></tr>
+<tr><th>Mensagem sobre tabela com cargas ausente</th><td>Falta o arquivo <code>dyff_bond_library_cm5.json</code>; o programa usa a tabela sem cargas.</td></tr>
+</table>
+<h2>Arquivos de dados usados</h2>
+<table>
+<tr><th><code>src/pdynamo/data/dyff_bond_library.json</code></th><td>torções DFT por ambiente, modelo sem cargas</td></tr>
+<tr><th><code>dyff_bond_library_cm5.json</code></th><td>torções DFT por ambiente, modelo com cargas CM5</td></tr>
+<tr><th><code>dyff_hessian_library.json</code></th><td>calibração DFT/xTB das constantes de ligação e ângulo</td></tr>
+<tr><th><code>dyff_residue_library_fm.json</code></th><td>biblioteca de resíduos padrão (ajustada por força)</td></tr>
+<tr><th><code>dyff_residue_library_calibrated.json</code>, <code>dyff_residue_library.json</code></th><td>versões anteriores, mantidas para comparação</td></tr>
+</table>
+<p style="color:var(--muted)">Detalhes de métodos e validação: <code>docs/dyff_refinement_SI.html</code> (em inglês, para o artigo) e <code>docs/dyff_xtb_refinement_report.html</code>.</p>
+</main></body></html>

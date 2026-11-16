@@ -52,8 +52,22 @@ model = dyff_model(parameter_set=EH_DYFF_SET)   # dyff-1.0-eh
 system.DefineMMModel(model)
 ```
 
-See `examples/` in the EasyHybrid3 repository (`examples/dyff_prep_bachega/prepare_dyff_eh.py`)
-for a full worked script: structure file in, DYFF-1.0eh system out, no GUI.
+See `examples/dyff_prep_bachega/prepare_dyff_eh.py` for a full worked script: structure
+file in, DYFF-1.0eh system out, no GUI (`python3 examples/dyff_prep_bachega/prepare_dyff_eh.py`
+runs it against the bundled `1BX4.pdb`). It is what EasyHybrid's own System > Prepare DYFF
+System does, written out as a plain script.
+
+## Documentation
+
+- `docs/dyff_preparo_sistema.html` — preparation methodology (chemistry, protonation,
+  residue library, charges) in Portuguese.
+- `docs/dyff_xtb_refinement_report.html`, `docs/dyff_refinement_SI.html` — the xTB-based
+  Hessian/torsion refinement of the atoms outside the residue library, with supporting
+  information.
+- `docs/ajuste_de_diedros_com_xtb.txt` — notes on the per-bond torsion fit against relaxed
+  xTB scans (`pdynamo/dyff_bond_fit.py`, `pdynamo/torsion_fit.py`).
+- `docs/xtb_fragment_library_roadmap.md` — the original (2026-10-06) design roadmap for the
+  xTB fragment/torsion library; superseded by the implementation, kept for the rationale.
 
 ## Package layout
 

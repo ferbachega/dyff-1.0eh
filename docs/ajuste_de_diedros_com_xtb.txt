@@ -1,0 +1,53 @@
+O ajuste de diedros com varredura xTB no DYFF está pronto. Testei na interface real, num processo isolado, com a flavona; os 52 testes passam (5 novos). Reinicie o EasyHybrid para ver.
+
+Como usar
+
+1. Na janela DYFF Parameters, aba Dihedrals, selecione uma linha. Se o grupo tiver mais de um diedro, use ◀ ▶ para escolher qual será varrido.
+2. Clique em "Fit with xTB scan…". O botão só fica ativo em linhas de diedro.
+3. Na janela que abre, escolha:
+   - método: GFN2 ou GFN1;
+   - solvente ALPB (o padrão é fase gasosa);
+   - carga e multiplicidade;
+   - passo da varredura;
+   - maior período a ajustar;
+   - varredura relaxada ou rígida; na relaxada, pode varrer nos dois sentidos (fica com a menor energia em cada ângulo, para evitar histerese).
+4. Clique em Run scan and fit. O xtb roda em segundo plano, com barra de progresso e botão Cancel.
+5. O gráfico do EasyPlot mostra três curvas, com legenda, leitura x/y sob o cursor e caixa para esconder a curva DYFF atual:
+   - xTB (pontos pretos);
+   - DYFF atual (vermelho);
+   - DYFF ajustado (azul).
+6. Embaixo do gráfico aparecem os coeficientes antigos e novos, o erro (RMSE) antes e depois, e avisos quando há.
+7. Apply fitted parameter grava o ajuste como edição daquele parâmetro: a linha fica azul e o Undo desfaz. Save data… salva um .txt com as curvas e um .png do gráfico.
+
+Resultado na flavona (ligação entre os anéis)
+
+┌───────────────┬─────────────────────────┬─────────────┐
+│               │ Parâmetro (c n, kJ/mol) │ RMSE vs xTB │
+├───────────────┼─────────────────────────┼─────────────┤
+│ DYFF original │ 13.075 0; −13.075 2     │ 24.9 kJ/mol │
+├───────────────┼─────────────────────────┼─────────────┤
+│ Ajustado      │ 4.845 2; −1.309 4       │ 0.45 kJ/mol │
+└───────────────┴─────────────────────────┴─────────────┘
+
+O DYFF original força a molécula a ficar plana, com barreira de ~80 kJ/mol. O xTB dá mínimo torcido em ~±30° e barreira de 12.5 kJ/mol, e a curva ajustada praticamente coincide com a do xTB. A varredura relaxada de 24 pontos levou 3 s.
+
+Detalhes do método
+
+- Varredura relaxada: uma única execução do xtb com o diedro restrito em cada ângulo. Cada ponto é depois recalculado sem a restrição, para que a energia não carregue o termo de restrição.
+- Varredura rígida: gira a molécula otimizada pelo xTB. Corrigi isso durante os testes: girar a geometria crua do PDB punha a tensão dela em todos os pontos.
+- Ajuste: o diedro no DYFF tem a forma E = Σ cₙ cos(nφ), que é linear nos cₙ, então o ajuste é um mínimo-quadrados direto, sem chute inicial. O alvo é E_xTB menos a energia DYFF com o parâmetro zerado, somando todos os diedros que compartilham o parâmetro.
+- Pontos de energia alta (acima de 25 kJ/mol, típico de choques entre átomos) contam menos no ajuste.
+- Verificação: a curva "ajustada" não vem da fórmula. Ela é recalculada pelo pDynamo com o parâmetro novo.
+
+Um problema encontrado e corrigido no teste: no fenil, os dois diedros do grupo estão a 180° um do outro, então os termos n=1 e n=3 se cancelam. Mesmo assim o ajuste dava c₁ = −7, que era só ruído das geometrias relaxadas. Agora os períodos que quase não variam ao longo da varredura são descartados, e a janela avisa ("Period(s) 1, 3 left out").
+
+Avisos que a janela mostra:
+- sem cargas parciais, a torção ajustada também compensa a eletrostática que falta, e o parâmetro fica menos transferível; vale calcular as cargas CM5 antes;
+- o mesmo parâmetro em outras ligações da molécula também é alterado pelo ajuste;
+- ligações dentro de anéis não podem ser varridas e são recusadas.
+
+Os arquivos novos são src/pdynamo/dyff_torsion_fit.py, que faz a varredura e o ajuste, e a janela dyff_torsion_fit_window.py com seu .glade, construída pelo glade como você perguntou antes. Os testes estão em tests/test_dyff_torsion_fit.py.
+
+tests/test_bond_order_matching.py chama sys.exit ao ser importado e interrompe o pytest tests/ inteiro. O arquivo não é deste trabalho, então rodei a suíte deixando-o de fora.
+
+O próximo passo natural é levar o mesmo ajuste para a janela de OPLS, onde o relatório de qualidade já aponta as ligações giráveis sem parâmetro.
