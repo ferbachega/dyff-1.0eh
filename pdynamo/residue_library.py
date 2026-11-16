@@ -83,6 +83,12 @@ def match_residues ( residues, symbols, neighbours, library ):
     for name, t in library["templates"].items ( ): by_family[t["family"]].append ( name )
     matches, unmatched = [ ], [ ]
     for label, generic, atoms in residues:
+        if not generic:
+            # . genericLabel defaults to None in pDynamo3 for a residue built
+            #   without going through ParseLabel (e.g. an atom/residue added
+            #   programmatically, or from the Builder) -- can't be matched to
+            #   a named template, but is not an error: treat as unmatched.
+            unmatched.append ( ( label, generic, atoms ) ); continue
         family = ALIASES.get ( generic.upper ( ), generic.upper ( ) )
         members = set ( atoms )
         g = nx.Graph ( )
