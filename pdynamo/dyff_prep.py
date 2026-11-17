@@ -58,6 +58,14 @@ DONORS = { "N": 0.71, "O": 0.66, "S": 1.05, "Se": 1.20, "Cl": 1.02, "Br": 1.20, 
 COORDINATION_SLACK = 0.5       # A over the sum of covalent radii
 COVALENT_CONTACT = 2.0         # A: a non-library residue this close to another residue is covalently bound
 _BOND_RADII = { 1: 0.31, 6: 0.76, 7: 0.71, 8: 0.66, 15: 1.07, 16: 1.05, 34: 1.20 }
+# . d-block (Sc-Zn, Y-Cd, Hf-Hg, Rf-Cn) and f-block (lanthanides, actinides) atomic
+#   numbers: single-atom residues of these elements are chemically "non-innocent"
+#   metal sites (need donor bonds, a realistic oxidation state and multiplicity) even
+#   when METALS above has no entry for them (an engineered/rare metalloprotein, a
+#   metal substituted for the native one). Alkali/alkaline-earth ions (Na, K, Li, Rb,
+#   Cs, Sr, Ba, ...) are correctly left out: a bare point charge is the normal model.
+_TRANSITION_OR_F_BLOCK = ( set ( range ( 21, 31 ) ) | set ( range ( 39, 49 ) ) | set ( range ( 57, 81 ) ) |
+                           set ( range ( 89, 113 ) ) )
 
 
 def _element ( z ):
@@ -71,12 +79,18 @@ def _element ( z ):
 def analyze ( system ):
     """ { "analysis" (opls.prep.PrepAnalysis), "metals" [ site ], "ligands" [ residue
         indices ], "metal_cofactors" [ residue indices ], "truncated" [ ( index, label,
-        missing ) ] }. site = { "residue", "label", "element", "charge", "multiplicity",
-        "model", "donors": [ ( residue index, atom name, distance ) ] }. """
+        missing ) ], "unrecognized_metals" [ ( residue index, label, element ) ] }.
+        site = { "residue", "label", "element", "charge", "multiplicity", "model",
+        "donors": [ ( residue index, atom name, distance ) ] }.
+        unrecognized_metals: single-atom transition/lanthanide/actinide ions METALS has
+        no default for -- NOT given a bonded model or a realistic charge/multiplicity,
+        kept as a plain point ion like any other monatomic residue. Report this to the
+        user (cmd_metals, the Prepare DYFF dialog): silently doing nothing to, say, a
+        bound Ru or a lanthanide tag would look identical to a correctly-handled site. """
     from pdynamo import structure_prep as prep
     analysis = prep.analyze_system ( system )
     residues = analysis.residues
-    metals, ligands, metal_cofactors = [ ], [ ], [ ]
+    metals, ligands, metal_cofactors, unrecognized_metals = [ ], [ ], [ ], [ ]
     for i, r in enumerate ( residues ):
         elements = [ _element ( z ) for ( name, z, xyz ) in r.atoms ]
         heavy = [ a for a in r.atoms if a[1] != 1 ]
@@ -85,6 +99,8 @@ def analyze ( system ):
             charge, mult, radius, model = METALS[element]
             metals.append ( { "residue": i, "label": r.label, "element": element, "charge": charge, "multiplicity": mult,
                               "model": model, "radius": radius, "xyz": np.asarray ( heavy[0][2], float ), "donors": [ ] } )
+        elif len ( heavy ) == 1 and elements and heavy[0][1] in _TRANSITION_OR_F_BLOCK:
+            unrecognized_metals.append ( ( i, r.label, _element ( heavy[0][1] ) ) )
         elif r.kind == "unsupported":
             ( metal_cofactors if any ( e in METALS for e in elements ) else ligands ).append ( i )
     # . donors: N, O, S, ... of other residues within the sum of covalent radii + slack
@@ -123,7 +139,7 @@ def analyze ( system ):
                      for ( n, z, xyz ) in r.atoms ):
                 covalent.append ( i ); break
     return { "analysis": analysis, "metals": metals, "ligands": ligands, "metal_cofactors": metal_cofactors, "truncated": truncated,
-             "covalent": covalent, "removed": [ ] }
+             "covalent": covalent, "removed": [ ], "unrecognized_metals": unrecognized_metals }
 
 
 def remove_residues ( info, indices ):
@@ -133,6 +149,7 @@ def remove_residues ( info, indices ):
     info["removed"] = sorted ( set ( info.get ( "removed", [ ] ) ) | indices )
     info["ligands"] = [ i for i in info["ligands"] if i not in indices ]
     info["metal_cofactors"] = [ i for i in info["metal_cofactors"] if i not in indices ]
+    info["unrecognized_metals"] = [ t for t in info.get ( "unrecognized_metals", [ ] ) if t[0] not in indices ]
     info["covalent"] = [ i for i in info["covalent"] if i not in indices ]
     info["truncated"] = [ t for t in info["truncated"] if t[0] not in indices ]
     for site in info["metals"]:

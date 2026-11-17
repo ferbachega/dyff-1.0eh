@@ -522,16 +522,33 @@ def rest_parameters ( system, rest_atoms, solvent = "water", threads = 4, hessia
             sub = SS.build_subsystem ( z, xyz, bonds, group, shell = shell, formal_charges = formal )
             symbols = [ PeriodicTable.Symbol ( x ) for x in sub["atomic_numbers"] ]
             hdir = sub_log ( os.path.join ( "hessian", "group_{}".format ( group[0] + 1 ) ) )
+            # . anchors: real atoms (not a cap) directly bonded to a cap -- the subsystem's
+            #   only link to the rest of the structure. Held fixed during the xtb
+            #   optimization so a multi-dentate site (its real geometry held by the parts
+            #   that got cut away, not by the caps) does not drift into a vacuum-relaxed
+            #   shape before the Hessian is taken (2026-11-16, 1ZNF Zn site: unconstrained,
+            #   donor-Zn-donor angles drifted 15-23 degrees from the input structure).
+            cap = set ( i for i, p in enumerate ( sub["parent_index"] ) if p < 0 )
+            anchors = set ( )
+            for a, b, *_ in sub["bonds"]:
+                if ( a in cap ) != ( b in cap ): anchors.add ( b if a in cap else a )
+            anchors = sorted ( anchors )
             x_opt, h, _ = SM.xtb_hessian ( symbols, sub["coordinates"], charge = sub["charge"], threads = 1, solvent = solvent,
                                            multiplicity = multiplicity_of ( set ( group ) ), gfn = "gxtb" if method == "gxtb" else 2,
-                                           log_dir = hdir )
+                                           log_dir = hdir, fixed = anchors )
             if hdir:
                 from pdynamo import param_logs
                 param_logs.keep ( None, hdir, texts = { "parent_atoms.txt": "subsystem atom -> system atom (1-based, 0 = cap)\n" +
                                   "\n".join ( "{} {}".format ( k + 1, p + 1 ) for k, p in enumerate ( sub["parent_index"] ) ) + "\n" } )
             skipped = [ ]
             mapped_cal = BL.HessianCalibration.mapped ( calibration, sub["parent_index"] ) if calibration is not None else None
-            sem = SM.dyff_edits_from_hessian ( h, x_opt, [ ( a, b ) for a, b, o, ar in sub["bonds"] ], skipped, calibration = mapped_cal )
+            # . an anchor's own bonds/angles are left to the plain DYFF defaults: xtb never
+            #   displaced it, so any Hessian block touching it is identically zero (see
+            #   xtb_hessian's docstring), not a usable force constant.
+            fixed_atoms = set ( anchors )
+            fit_bonds = [ ( a, b ) for a, b, o, ar in sub["bonds"] if a not in fixed_atoms and b not in fixed_atoms ]
+            sem = SM.dyff_edits_from_hessian ( h, x_opt, fit_bonds, skipped, calibration = mapped_cal )
+            SM.drop_metal_centered_angles ( sem, sub["atomic_numbers"] )
             return SS.map_term_edits_to_parent ( sem, sub["parent_index"], group ), len ( skipped ), len ( symbols )
         say ( "xTB Hessians of {} group(s) of atoms outside the library...".format ( len ( groups ) ) )
         sizes = [ ]

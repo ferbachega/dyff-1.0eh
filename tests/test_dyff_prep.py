@@ -92,6 +92,29 @@ def test_truncated_residue_is_completed(tmp_path):
         assert np.min(np.linalg.norm(x[others] - x[idx[name]], axis=1)) > 0.9
 
 
+def test_unrecognized_metal_is_flagged_not_silently_dropped(tmp_path):
+    """ A transition-metal ion METALS has no entry for (e.g. an engineered/rare
+        metalloprotein, Ru here) must not disappear into "metals": [] with no trace --
+        it is reported separately so cmd_metals / the Prepare DYFF dialog can warn the
+        user instead of silently treating it as an inert point ion. """
+    from pdynamo import dyff_prep as DP
+    lines = open(os.path.join(DATA, "1UBQ.pdb")).read().splitlines()
+    cut = [l for l in lines if l.startswith(("ATOM", "HETATM")) and l[17:20] != "HOH"]
+    # . column-exact HETATM line: a real single-atom metal line (1ZNF's zinc) with only
+    #   same-width substitutions (element ZN -> RU, chain A -> X so resSeq 27 cannot
+    #   collide with a real 1UBQ residue), not hand-counted columns.
+    zn_line = "HETATM  425 ZN    ZN A  27      -2.880  -3.408  -1.345  1.00  0.00          ZN"
+    cut.append(zn_line.replace("ZN", "RU").replace(" A  27", " X  27"))
+    path = tmp_path / "ubq_ru.pdb"
+    path.write_text("\n".join(cut) + "\nEND\n")
+    info = DP.analyze(_import(str(path)))
+    assert not info["metals"]                                    # not mistaken for a known site
+    assert [e for _, _, e in info["unrecognized_metals"]] == ["Ru"]
+    # . an alkali/alkaline-earth ion the preparation already treats as an ordinary,
+    #   correctly-unflagged point charge must NOT be caught by the same check
+    assert not DP._TRANSITION_OR_F_BLOCK & { 11, 19, 12, 20 }     # Na, K, Mg, Ca
+
+
 def test_untyped_metal_gets_a_type():
     """ Free Ca2+ (calmodulin, ionic sites) has no DYFF pattern: the preparation's type
         overrides make MMModelDYFFEdited type it ("Ca:Oct:+2"); without them typing fails. """

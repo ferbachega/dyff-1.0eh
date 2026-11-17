@@ -70,10 +70,23 @@ def read_xtb_hessian ( path, n_atoms ):
     return 0.5 * ( hessian + hessian.T ) * HARTREE_PER_BOHR2_TO_KJ_PER_A2
 
 
-def xtb_hessian ( symbols, coordinates, charge = 0, multiplicity = 1, gfn = 2, xtb = None, threads = 2, solvent = None, log_dir = None ):
+def xtb_hessian ( symbols, coordinates, charge = 0, multiplicity = 1, gfn = 2, xtb = None, threads = 2, solvent = None, log_dir = None, fixed = None ):
     """ xtb --ohess: ( optimized coordinates A, Hessian kJ/mol/A^2, frequencies cm-1 from xtb ).
         gfn = 0/1/2 (GFN-xTB) or "gxtb" (g-xTB through tblite, xtb >= 6.7.1; gas phase
-        only: tblite has no implicit solvent, so `solvent` is ignored with g-xTB). """
+        only: tblite has no implicit solvent, so `solvent` is ignored with g-xTB).
+
+        fixed: 0-based atom indices to hold at their input position during the
+        optimization (xtb "$fix atoms"), for a capped subsystem cut out of a larger
+        structure (a metal site, a residue): with nothing fixed the whole fragment is
+        free to relax in vacuum, which for a multi-dentate site anchored by the rest of
+        the structure (not reproduced by the H caps alone) can drift tens of degrees
+        from the embedded geometry before the Hessian is taken (2026-11-16, 1ZNF Zn
+        site). Fixing a boundary atom removes it (and only it) from the Hessian here --
+        the caller must not request bond/angle constants for a pair that includes one;
+        fix the atoms adjacent to a cap, not every atom kept from the parent structure,
+        or every interatomic block between two fixed atoms -- including the metal
+        site's own bonds -- comes back identically zero (xtb's numerical Hessian never
+        displaces a fixed atom to probe it). """
     if xtb is None:
         from glob import glob
         candidates = [ shutil.which ( "xtb" ) ] + sorted ( glob ( os.path.expanduser ( "~/programs/xtb-*/bin/xtb" ) ), reverse = True )
@@ -90,10 +103,14 @@ def xtb_hessian ( symbols, coordinates, charge = 0, multiplicity = 1, gfn = 2, x
         command = [ xtb, "m.xyz", "--ohess" ] + method + [ "--chrg", str ( charge ) ]
         if multiplicity > 1: command += [ "--uhf", str ( multiplicity - 1 ) ]
         if solvent and method[0] != "--gxtb": command += [ "--alpb", solvent ]
+        if fixed:
+            with open ( os.path.join ( tmp, "xtb.inp" ), "w" ) as handle:
+                handle.write ( "$fix\n   atoms: " + ",".join ( str ( int ( i ) + 1 ) for i in sorted ( fixed ) ) + "\n$end\n" )
+            command += [ "--input", "xtb.inp" ]
         result = subprocess.run ( command, cwd = tmp, capture_output = True, text = True, timeout = 7200,
                                   env = dict ( os.environ, OMP_NUM_THREADS = str ( threads ), OMP_STACKSIZE = "1G" ) )
         from pdynamo import param_logs
-        param_logs.keep ( tmp, log_dir, [ "m.xyz", "xtbopt.xyz", "vibspectrum" ],
+        param_logs.keep ( tmp, log_dir, [ "m.xyz", "xtbopt.xyz", "vibspectrum", "xtb.inp" ],
                           { "xtb_ohess.out": "$ " + " ".join ( command[1:] ) + "\n" + result.stdout + result.stderr } )
         if "normal termination of xtb" not in result.stdout + result.stderr:
             raise RuntimeError ( "xtb --ohess failed: " + ( result.stdout + result.stderr )[-800:] )
@@ -257,6 +274,31 @@ def dyff_edits_from_hessian ( hessian, coordinates, bonds, skipped = None, calib
             if skipped is not None: skipped.append ( ( "angle", ( a, b, c ), k ) )
             continue
         edits["angle_terms"]["{}-{}-{}".format ( a, b, c )] = [ list ( p ) for p in dyff_angle_pairs ( theta0, k ) ]
+    return edits
+
+
+def drop_metal_centered_angles ( edits, atomic_numbers ):
+    """ Removes "angle_terms" edits whose central atom is a transition metal (2026-11-16).
+
+        dyff_edits.py already has a dedicated mechanism for a donor-M-donor angle: the
+        metal's ideal coordination geometry (tetrahedral, square-planar, ...) perceived
+        from the structure, combined with a UFF-style force constant from the atoms'
+        effective charges (_preset_metal_geometry / _metal_angles / _uff_angle_terms),
+        calibrated against tmQM. A per-term edit for the SAME atom triple overrides that
+        mechanism outright (dyff_edits.py's per-term edits always win), and the capped-
+        fragment Hessian fit is consistently too soft for this once the rest of the
+        structure is back in play: on 1ZNF's Zn site (Cys2His2), the fitted angle force
+        constants came out ~100-150 kJ/mol/rad^2 and a full-system CG optimization sagged
+        the site 15-30 deg from tetrahedral; dropping just the 6 donor-Zn-donor edits and
+        falling back to the built-in mechanism gave a stable ~109-110 deg after the same
+        optimization. Metal-donor BOND edits and donor-centred angle edits (e.g. the
+        Cys CB-SG-Zn angle) are untouched: nothing else in DYFF provides those, and they
+        are not in competition with a better-tuned alternative. """
+    from pdynamo.metal_geometry import TRANSITION_METALS
+    angle_terms = edits.get ( "angle_terms" )
+    if angle_terms:
+        edits["angle_terms"] = { k: v for k, v in angle_terms.items ( )
+                                  if atomic_numbers[int ( k.split ( "-" )[1] )] not in TRANSITION_METALS }
     return edits
 
 
