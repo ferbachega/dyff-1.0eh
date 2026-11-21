@@ -12,9 +12,11 @@ pDynamo3 fork): an extension of pDynamo3's own generic, rule-based `dyff-1.0` wi
 - per-bond torsion refinement against relaxed GFN2-xTB scans,
 - Hessian-derived (Seminario-style) bond/angle terms for metal sites.
 
-**Status (2026-11):** just split out of
-[EasyHybrid3](https://github.com/ferbachega/EasyHybrid3)'s `src/pdynamo/`. It does not need
-the EasyHybrid GUI — only `pdynamo3-eh` and this package.
+**Status (2026-11): experimental — use with caution.** This is active research
+software: parameters, type coverage and corrections (metal sites, residue library,
+charge models) are still being validated and change between commits. It just split out
+of [EasyHybrid3](https://github.com/ferbachega/EasyHybrid3)'s `src/pdynamo/`, and does
+not need the EasyHybrid GUI — only `pdynamo3-eh` and this package.
 
 ## Why "pdynamo" and not "dyffeh" as the package name
 
